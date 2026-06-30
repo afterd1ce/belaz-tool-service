@@ -5,10 +5,10 @@ from api.v1.dependencies import get_calibration_service
 from core.deps import require_role
 from models.user import UserRole
 
-router = APIRouter()
+router = APIRouter(prefix="/api/v1/calibration", tags=["calibration"])
 
 
-@router.get("/api/v1/calibration/expired")
+@router.get("/expired")
 def expired(
     calibration_service: CalibrationService = Depends(get_calibration_service),
     _=Depends(require_role(UserRole.METROLOGIST, UserRole.ADMIN)),
@@ -16,7 +16,7 @@ def expired(
     return calibration_service.get_expired()
 
 
-@router.post("/api/v1/calibration/verify")
+@router.post("/verify")
 def verify(
     data: VerifyCalibration,
     calibration_service: CalibrationService = Depends(get_calibration_service),
@@ -28,6 +28,6 @@ def verify(
         raise HTTPException(status_code=404, detail=str(e))
 
 
-@router.post("/api/v1/maintenance/daily-check")
+@router.post("/daily-check")
 def daily_check(calibration_service: CalibrationService = Depends(get_calibration_service)):
     return calibration_service.daily_check()

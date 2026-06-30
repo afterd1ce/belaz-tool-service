@@ -5,10 +5,10 @@ from api.v1.dependencies import get_instrument_service
 from core.deps import require_role
 from models.user import UserRole
 
-router = APIRouter()
+router = APIRouter(prefix="/api/v1/instruments", tags=["instruments"])
 
 
-@router.get("/api/v1/instruments")
+@router.get("")
 def list_instruments(
     workshop: str | None = Query(None),
     status: str | None = Query(None),
@@ -18,7 +18,7 @@ def list_instruments(
     return instrument_service.get_all(workshop, status, type)
 
 
-@router.post("/api/v1/instruments")
+@router.post("")
 def create_instrument(
     data: CreateInstrument,
     instrument_service: InstrumentService = Depends(get_instrument_service),
@@ -27,7 +27,7 @@ def create_instrument(
     return instrument_service.create(data)
 
 
-@router.get("/api/v1/instruments/{inst_id}")
+@router.get("/{inst_id}")
 def get_instrument(inst_id: str, instrument_service: InstrumentService = Depends(get_instrument_service)):
     try:
         return instrument_service.get_by_id(inst_id)
@@ -35,7 +35,7 @@ def get_instrument(inst_id: str, instrument_service: InstrumentService = Depends
         raise HTTPException(status_code=404, detail=str(e))
 
 
-@router.put("/api/v1/instruments/{inst_id}")
+@router.put("/{inst_id}")
 def update_instrument(
     inst_id: str,
     data: UpdateInstrument,
@@ -48,7 +48,7 @@ def update_instrument(
         raise HTTPException(status_code=404, detail=str(e))
 
 
-@router.delete("/api/v1/instruments/{inst_id}")
+@router.delete("/{inst_id}")
 def delete_instrument(
     inst_id: str,
     instrument_service: InstrumentService = Depends(get_instrument_service),

@@ -5,10 +5,10 @@ from api.v1.dependencies import get_movement_service
 from core.deps import require_role
 from models.user import UserRole
 
-router = APIRouter()
+router = APIRouter(prefix="/api/v1/movements", tags=["movements"])
 
 
-@router.post("/api/v1/movements/issue")
+@router.post("/issue")
 def issue(
     data: IssueInstrument,
     movement_service: MovementService = Depends(get_movement_service),
@@ -20,7 +20,7 @@ def issue(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.post("/api/v1/movements/return")
+@router.post("/return")
 def return_instrument(
     data: ReturnInstrument,
     movement_service: MovementService = Depends(get_movement_service),
@@ -32,6 +32,6 @@ def return_instrument(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/api/v1/movements/history/{inst_id}")
+@router.get("/history/{inst_id}")
 def history(inst_id: str, movement_service: MovementService = Depends(get_movement_service)):
     return movement_service.get_history(inst_id)
